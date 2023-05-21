@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: customers
+  datasource:
+    url: jdbc:postgresql://localhost:5434/customers
+    password: user
+    username: user
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL10Dialect
+        format_sql: true
+    show-sql: true
+  rabbitmq:
+    addresses: localhost:5672
+    host: localhost
+    port: 15672
+    username: user
+    password: user
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    fetch-registry: true
+    register-with-eureka: true
+    enabled: true
+
+#endpoints:
+#  ms-fraud: http://localhost:8181
+
+rabbitmq:
+  exchanges:
+    internal: internal.exchange
+  queues:
+    notification: notification.queue
+  routing-keys:
+    internal-notification: internal.notification.routing-key

@@ -1,0 +1,80 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.7.6'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'com.palantir.docker' version '0.22.1'
+}
+
+group = 'com.example'
+version = '0.0.1'
+sourceCompatibility = '17'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+ext {
+    set('springCloudVersion', "2021.0.6")
+}
+
+jar {
+    manifest {
+        attributes "Main-Class":
+                "az.company.demo.PerformingTasksApplication(Main app reference)"
+    }
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+    // Web
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // JPA
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // Open Feign
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+    // Postgresql
+    runtimeOnly 'org.postgresql:postgresql:42.5.4'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // AMQP
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
+    // Eureka Client
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+
+    // Sleuth
+    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+// Automating docker image building under project dir
+// </> ./gradlew docker --- builds image
+// </> ./gradlew dockerPush --- pushes to the remote repository
+docker {
+    dependsOn bootJar
+    name "worldoflegion/${project.name}:${project.version}"
+    files bootJar.archivePath, processResources
+}

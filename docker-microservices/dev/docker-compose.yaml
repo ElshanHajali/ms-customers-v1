@@ -1,0 +1,110 @@
+version: '3.9'
+
+services:
+  customers-db:
+    image: postgres
+    mem_limit: 200 M
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: user
+      POSTGRES_DB: customers
+    networks:
+      - backend
+    volumes:
+      - customers_data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+
+  fraud-db:
+    image: postgres
+    mem_limit: 200 M
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: user
+      POSTGRES_DB: fraud
+    networks:
+      - backend
+    volumes:
+      - fraud_data:/var/lib/postgresql/data
+    ports:
+      - "5535:5432"
+
+  notification-db:
+    image: postgres
+    mem_limit: 200 M
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: user
+      POSTGRES_DB: notification
+    networks:
+      - backend
+    volumes:
+      - notification_data:/var/lib/postgresql/data
+    ports:
+      - "5636:5432"
+
+  # RabbitMQ
+  stats:
+    image: bitnami/rabbitmq
+    container_name: stats
+    mem_limit: 250 M
+    environment:
+      - RABBITMQ_USERNAME=user
+      - RABBITMQ_PASSWORD=user
+      - RABBITMQ_NODE_TYPE=stats
+      - RABBITMQ_NODE_NAME=rabbit@stats
+      - RABBITMQ_ERL_COOKIE=s3cr3tc00ki3
+    ports:
+      - '15672:15672'
+      - '5672:5672'
+    volumes:
+      - 'stats_data:/bitnami'
+    networks:
+      - rmq-backend
+  queue-disc1:
+    image: bitnami/rabbitmq
+    container_name: queue-disc1
+    mem_limit: 250 M
+    environment:
+      - RABBITMQ_NODE_TYPE=queue-disc
+      - RABBITMQ_NODE_NAME=rabbit@queue-disc1
+      - RABBITMQ_CLUSTER_NODE_NAME=rabbit@stats
+      - RABBITMQ_ERL_COOKIE=s3cr3tc00ki3
+    volumes:
+      - 'disc1_data:/bitnami'
+    networks:
+      - rmq-backend
+  queue-ram1:
+    image: bitnami/rabbitmq
+    container_name: queue-ram1
+    mem_limit: 250 M
+    environment:
+      - RABBITMQ_NODE_TYPE=queue-ram
+      - RABBITMQ_NODE_NAME=rabbit@queue-ram1
+      - RABBITMQ_CLUSTER_NODE_NAME=rabbit@stats
+      - RABBITMQ_ERL_COOKIE=s3cr3tc00ki3
+    volumes:
+      - 'ram1_data:/bitnami'
+    networks:
+      - rmq-backend
+
+volumes:
+  customers_data:
+  fraud_data:
+  notification_data:
+  #    Rabbit MQ
+  stats_data:
+    name: rmq_stats_data
+    driver: local
+  disc1_data:
+    name: rmq_disc1_data
+    driver: local
+  ram1_data:
+    name: rmq_ram1_data
+    driver: local
+
+networks:
+  backend:
+  #    Rabbit MQ
+  rmq-backend:
+    name: rmq-backend-network
