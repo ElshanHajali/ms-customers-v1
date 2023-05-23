@@ -1,8 +1,13 @@
 package com.example.customers.dto.request;
 
-public record NotificationRequest(
-        Long toCustomerId,
-        String toCustomerName,
-        String toCustomerEmail,
-        String message)
-{}
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@AllArgsConstructor
+public class NotificationRequest {
+        Long toCustomerId;
+        String toCustomerName;
+        String toCustomerEmail;
+        String message;
+}

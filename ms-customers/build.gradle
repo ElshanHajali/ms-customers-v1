@@ -3,6 +3,7 @@ plugins {
     id 'org.springframework.boot' version '2.7.6'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
     id 'com.palantir.docker' version '0.22.1'
+    id 'groovy'
 }
 
 group = 'com.example'
@@ -62,6 +63,14 @@ dependencies {
 
     // Sleuth
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+
+    // Sleuth Zipkin
+    implementation 'org.springframework.cloud:spring-cloud-sleuth-zipkin'
+
+    // Spock
+    implementation 'org.apache.groovy:groovy:4.0.10'
+    testImplementation 'org.spockframework:spock-spring:2.3-groovy-4.0'
+    testImplementation 'io.github.benas:random-beans:3.9.0'
 }
 
 dependencyManagement {

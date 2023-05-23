@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: user
       POSTGRES_DB: customers
     networks:
-      - backend
+      - postgres
     volumes:
       - customers_data:/var/lib/postgresql/data
     ports:
@@ -23,7 +23,7 @@ services:
       POSTGRES_PASSWORD: user
       POSTGRES_DB: fraud
     networks:
-      - backend
+      - postgres
     volumes:
       - fraud_data:/var/lib/postgresql/data
     ports:
@@ -37,7 +37,7 @@ services:
       POSTGRES_PASSWORD: user
       POSTGRES_DB: notification
     networks:
-      - backend
+      - postgres
     volumes:
       - notification_data:/var/lib/postgresql/data
     ports:
@@ -88,6 +88,15 @@ services:
     networks:
       - rmq-backend
 
+  # Zipkin
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    networks:
+      - backend
+    ports:
+      - "9411:9411"
+
 volumes:
   customers_data:
   fraud_data:
@@ -104,6 +113,7 @@ volumes:
     driver: local
 
 networks:
+  postgres:
   backend:
   #    Rabbit MQ
   rmq-backend:

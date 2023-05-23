@@ -42,6 +42,9 @@ dependencies {
 
     // Sleuth
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+
+    // Sleuth Zipkin
+    implementation 'org.springframework.cloud:spring-cloud-sleuth-zipkin'
 }
 
 dependencyManagement {

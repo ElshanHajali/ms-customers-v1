@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 //@FeignClient(name = "ms-fraud", value = "fraud", url = "${endpoints.ms-fraud}/v1/fraud-check")
-@FeignClient(value = "fraud")
+@FeignClient(value = "apigw")
 public interface FraudClient {
 
     @GetMapping("v1/fraud-check/{customerId}")
