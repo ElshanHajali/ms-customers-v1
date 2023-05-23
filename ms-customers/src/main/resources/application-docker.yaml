@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: customers
+  datasource:
+    url: jdbc:postgresql://customers-db:5432/customers
+    password: user
+    username: user
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL10Dialect
+        format_sql: true
+    show-sql: true
+
+  # RabbitMQ
+  rabbitmq:
+    addresses: rabbit-mq:5672
+    host: rabbit-mq
+    port: 15672
+    username: user
+    password: user
+
+  zipkin:
+    base-url: http://zipkin:9411
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+    fetch-registry: true
+    register-with-eureka: true
+    enabled: true
+
+#endpoints:
+#  ms-fraud: http://localhost:8181
+
+rabbitmq:
+  exchanges:
+    internal: internal.exchange
+  queues:
+    notification: notification.queue
+  routing-keys:
+    internal-notification: internal.notification.routing-key

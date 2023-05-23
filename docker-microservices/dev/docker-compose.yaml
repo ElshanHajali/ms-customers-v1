@@ -44,47 +44,18 @@ services:
       - "5636:5432"
 
   # RabbitMQ
-  stats:
+  rabbit-mq:
     image: bitnami/rabbitmq
-    container_name: stats
+    container_name: rabbit-mq
     mem_limit: 250 M
     environment:
       - RABBITMQ_USERNAME=user
       - RABBITMQ_PASSWORD=user
-      - RABBITMQ_NODE_TYPE=stats
-      - RABBITMQ_NODE_NAME=rabbit@stats
-      - RABBITMQ_ERL_COOKIE=s3cr3tc00ki3
     ports:
       - '15672:15672'
       - '5672:5672'
     volumes:
-      - 'stats_data:/bitnami'
-    networks:
-      - rmq-backend
-  queue-disc1:
-    image: bitnami/rabbitmq
-    container_name: queue-disc1
-    mem_limit: 250 M
-    environment:
-      - RABBITMQ_NODE_TYPE=queue-disc
-      - RABBITMQ_NODE_NAME=rabbit@queue-disc1
-      - RABBITMQ_CLUSTER_NODE_NAME=rabbit@stats
-      - RABBITMQ_ERL_COOKIE=s3cr3tc00ki3
-    volumes:
-      - 'disc1_data:/bitnami'
-    networks:
-      - rmq-backend
-  queue-ram1:
-    image: bitnami/rabbitmq
-    container_name: queue-ram1
-    mem_limit: 250 M
-    environment:
-      - RABBITMQ_NODE_TYPE=queue-ram
-      - RABBITMQ_NODE_NAME=rabbit@queue-ram1
-      - RABBITMQ_CLUSTER_NODE_NAME=rabbit@stats
-      - RABBITMQ_ERL_COOKIE=s3cr3tc00ki3
-    volumes:
-      - 'ram1_data:/bitnami'
+      - 'rabbit_mq_data:/bitnami'
     networks:
       - rmq-backend
 
@@ -97,19 +68,92 @@ services:
     ports:
       - "9411:9411"
 
+  eureka-server:
+    image: worldoflegion/ms-eureka-server:0.0.1
+    mem_limit: 200 M
+    container_name: eureka-server
+    environment:
+       - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - zipkin
+    ports:
+      - "8761:8761"
+    networks:
+      - backend
+
+  apigw:
+    image: worldoflegion/ms-apigw:0.0.1
+    mem_limit: 200 M
+    container_name: apigw
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - backend
+    depends_on:
+      - zipkin
+      - eureka-server
+    ports:
+      - "9090:9090"
+
+  ms-customers:
+    image: worldoflegion/ms-customers:0.0.1
+    mem_limit: 200 M
+    container_name: ms-customers
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - backend
+      - postgres
+      - rmq-backend
+    depends_on:
+      - zipkin
+      - eureka-server
+      - customers-db
+      - rabbit-mq
+    ports:
+      - "8080:8080"
+
+  ms-fraud:
+    image: worldoflegion/ms-fraud:0.0.1
+    mem_limit: 200 M
+    container_name: ms-fraud
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - backend
+      - postgres
+    depends_on:
+      - zipkin
+      - eureka-server
+      - fraud-db
+    ports:
+      - "8181:8181"
+
+  ms-notification:
+    image: worldoflegion/ms-notification:0.0.1
+    mem_limit: 200 M
+    container_name: ms-notification
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - backend
+      - postgres
+      - rmq-backend
+    depends_on:
+      - zipkin
+      - eureka-server
+      - notification-db
+      - rabbit-mq
+    ports:
+      - "8282:8282"
+
 volumes:
   customers_data:
   fraud_data:
   notification_data:
   #    Rabbit MQ
-  stats_data:
+  rabbit_mq_data:
     name: rmq_stats_data
-    driver: local
-  disc1_data:
-    name: rmq_disc1_data
-    driver: local
-  ram1_data:
-    name: rmq_ram1_data
     driver: local
 
 networks:
@@ -117,4 +161,3 @@ networks:
   backend:
   #    Rabbit MQ
   rmq-backend:
-    name: rmq-backend-network
