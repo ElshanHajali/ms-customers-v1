@@ -40,9 +40,6 @@ dependencies {
     // Postgresql
     runtimeOnly 'org.postgresql:postgresql:42.5.4'
 
-    // Eureka Client
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-
     // Sleuth
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 

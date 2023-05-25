@@ -58,9 +58,6 @@ dependencies {
     // AMQP
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
 
-    // Eureka Client
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-
     // Sleuth
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 

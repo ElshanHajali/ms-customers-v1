@@ -5,10 +5,10 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-//@FeignClient(name = "ms-fraud", value = "fraud", url = "${endpoints.ms-fraud}/v1/fraud-check")
-@FeignClient(value = "apigw")
+@FeignClient(name = "ms-fraud",
+        url = "${clients.fraud.url}/v1/fraud-check")
 public interface FraudClient {
 
-    @GetMapping("v1/fraud-check/{customerId}")
+    @GetMapping("{customerId}")
     FraudCheckResponse isFraudster(@PathVariable Long customerId);
 }

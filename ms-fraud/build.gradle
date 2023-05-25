@@ -37,9 +37,6 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
-    // Eureka Client
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-
     // Sleuth
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 

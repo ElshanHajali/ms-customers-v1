@@ -2,9 +2,9 @@ spring:
   application:
     name: fraud
   datasource:
-    url: jdbc:postgresql://fraud-db:5432/fraud
-    password: user
-    username: user
+    url: jdbc:postgresql://postgres:5432/frauds
+    password: pass
+    username: users
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:

@@ -68,33 +68,6 @@ services:
     ports:
       - "9411:9411"
 
-  eureka-server:
-    image: worldoflegion/ms-eureka-server:0.0.1
-    mem_limit: 200 M
-    container_name: eureka-server
-    environment:
-       - SPRING_PROFILES_ACTIVE=docker
-    depends_on:
-      - zipkin
-    ports:
-      - "8761:8761"
-    networks:
-      - backend
-
-  apigw:
-    image: worldoflegion/ms-apigw:0.0.1
-    mem_limit: 200 M
-    container_name: apigw
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-    networks:
-      - backend
-    depends_on:
-      - zipkin
-      - eureka-server
-    ports:
-      - "9090:9090"
-
   ms-customers:
     image: worldoflegion/ms-customers:0.0.1
     mem_limit: 200 M
@@ -107,7 +80,6 @@ services:
       - rmq-backend
     depends_on:
       - zipkin
-      - eureka-server
       - customers-db
       - rabbit-mq
     ports:
@@ -124,7 +96,6 @@ services:
       - postgres
     depends_on:
       - zipkin
-      - eureka-server
       - fraud-db
     ports:
       - "8181:8181"
@@ -141,7 +112,6 @@ services:
       - rmq-backend
     depends_on:
       - zipkin
-      - eureka-server
       - notification-db
       - rabbit-mq
     ports:

@@ -2,9 +2,9 @@ spring:
   application:
     name: customers
   datasource:
-    url: jdbc:postgresql://localhost:5434/customers
-    password: user
-    username: user
+    url: jdbc:postgresql://postgres:5432/customers
+    password: pass
+    username: users
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -17,14 +17,14 @@ spring:
 
   # RabbitMQ
   rabbitmq:
-    addresses: localhost:5672
-    host: localhost
+    addresses: rabbitmq:5672
+    host: rabbitmq
     port: 15672
-    username: user
-    password: user
+    username: guest
+    password: guest
 
-#  zipkin:
-#    base-url: http://localhost:9411
+  zipkin:
+    base-url: http://zipkin:9411
 
 #endpoints:
 #  ms-fraud: http://localhost:8181
